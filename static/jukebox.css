@@ -1,0 +1,409 @@
+/* ------ Stylesheet for the spotbox jukebox  -----  */
+/* Copyright (c) Simon McKenna (simes@hotmail.co.uk) */
+/*
+
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: #2b1d14;
+    overflow: hidden;
+    font-family: "Raleway", sans-serif;
+    color: #f8e7c4;
+}
+
+/* ---- FULL-SCREEN Jukebox Container with Neon Edge ---- */
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #222;
+    margin: 0;
+    color: #eee;
+    overflow: hidden;
+}
+
+.center{
+  display: grid;
+  place-items: center;
+}
+
+.jukebox {
+    width: 96vw;
+    height: 96vh;
+    margin: 0 auto; /* Centering the jukebox */
+    padding: 2vh 2vw;
+    padding: 2vh 2vw;
+    box-sizing: border-box;
+    background: linear-gradient(#c49e62, #8a6235);
+    border-radius: 2vw 2vw 4vw 4vw;
+    border: 1vw solid #b88a4b;
+    box-shadow: inset 0 0 3vw rgba(100, 60, 30, 0.5);
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    /* Neon glow on outer edge */
+    filter: drop-shadow(0 0 30px rgba(0, 255, 255, 0.6));
+}
+
+.jukebox::after {
+    top: 100%;
+    left: 50%;
+    width: 12vw;
+    height: 100%;
+    background: rgba(0, 255, 255, 0.6);
+    box-shadow: 0 0 12vw rgba(0, 255, 255, 0.6);
+}
+
+/* ---- Prominent SpotBox Title ---- */
+.jukebox-title1 {
+    font-family: "Special Elite", cursive;
+    font-size: 4vh;
+    color: #ffdd98;
+    margin-top: 2vh; /* Space from the top */
+    text-align: center;
+    text-shadow: 0 0 10px rgba(128, 128, 128, 0.8);
+}
+
+.jukebox-title1b {
+    font-family: "Special Elite", cursive;
+    font-size: 4vh;
+    color: #775733;
+    margin-top: 2vh; /* Space from the top */
+    text-align: center;
+    /*text-shadow: 0 0 10px rgba(128, 128, 128, 0.8);*/
+}
+
+.jukebox-title2 {
+    font-family: "Special Elite", cursive;
+    font-size: 3vh;
+    color: #ffdd98;
+    margin-top: 2vh; /* Space from the top */
+    text-align: center;
+    /*text-shadow: 0 0 10px rgba(128, 128, 128, 0.8);*/
+}
+
+.jukebox-title2r {
+    font-family: "Special Elite", cursive;
+    font-size: 3vh;
+    color: #ff1111;
+    margin-top: 2vh; /* Space from the top */
+    text-align: center;
+    /*text-shadow: 0 0 10px rgba(128, 128, 128, 0.8);*/
+}
+
+
+.jukebox-title2b {
+    font-family: "Special Elite", cursive;
+    font-size: 3vh;
+    color: #775733;
+    margin-top: 2vh; /* Space from the top */
+    text-align: center;
+    /*text-shadow: 0 0 10px rgba(128, 128, 128, 0.8);*/
+}
+
+.jukebox-title3 {
+    font-family: "Special Elite", cursive;
+    font-size: 2vh;
+    color: #ffdd98;
+    margin-top: 2vh; /* Space from the top */
+    text-align: center;
+    /*text-shadow: 0 0 10px rgba(128, 128, 128, 0.8);*/
+}
+
+/* ---- Prominent SpotBox Title with Credits Counter ---- */
+.jukebox-title {
+    font-family: "Special Elite", cursive;
+    font-size: 4vh;
+    color: #ffdd98;
+    margin-top: 1vh; /* Space from the top */
+    margin-bottom: 1vh; /* Space from the bottom */
+    text-align: center;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Credits Field */
+.credits {
+    font-family: "Special Elite", cursive;
+    font-size: 4vh;
+    color: #ffdd98;
+    margin-top: 1vh; /* Space from the top */
+    margin-bottom: 1vh; /* Space from the bottom */
+    text-align: center;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+/* ---- Top glowing arc ---- */
+.jukebox-top {
+    width: 100%;
+    height: 8vh;
+    border-radius: 4vw 4vw 0 0;
+    background: radial-gradient(circle at top, #ffeebc, #e4b67b, #bb8a58);
+    box-shadow:
+        inset 0 0 4vw rgba(255, 240, 200, 0.8),
+        0 0 4vw rgba(255, 200, 140, 0.6);
+    margin-bottom: 1vh;
+}
+
+.jukebox-bottom {
+    width: 100%;
+    height: 8vh;
+    border-radius: 0 0 20vw 20vw;
+    background: radial-gradient(circle at bottom, #ffeebc, #e4b67b, #bb8a58);
+    box-shadow:
+        inset 0 0 6vw rgba(255, 240, 200, 0.8),
+        0 0 6vw rgba(255, 200, 140, 0.6);
+    margin-top: 1vh;
+}
+
+
+/* ---- Content area (two screens) ---- */
+.screen {
+    width: 98%;
+    height: 40vh; /* Limit height to avoid excessive space usage */
+    max-height: 40vh;
+    background: #1a120d;
+    border-radius: 1vw;
+    border: .5vw solid #b88a4b; /* Chrome borders */
+    box-shadow: inset 0 0 2vw rgba(255, 230, 160, 0.5);
+    color: #ffdd98;
+    padding: 1vh 1vw;
+    margin: 1vh 0;
+    position: relative;
+
+    /* Chrome-like Borders */
+    border: 0.4vw solid #ccc;
+    box-shadow: 0 0 2vw rgba(255, 255, 255, 0.3), 0 0 3vw rgba(255, 255, 255, 0.5) inset;
+}
+
+/* Admin Items with 2 Columns */
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    gap: 1vw;
+    max-width: 100%;
+    height: 24vh; /* Limit height to avoid excessive space usage */
+    margin: 0;
+}
+
+/*admin layout  */
+.admin-wrap {
+    display: flex;
+    flex-direction: row; /* Align items horizontally */
+    align-items: flex-start; /* Align to the top */
+    justify-content: flex-start;
+    width: 85%;
+    height: 8vh;
+    max-height: 8vh;
+}
+
+/* Title bar */
+.screen-title {
+    font-family: "Special Elite";
+    font-size: 2vh;
+    margin-bottom: 1vh;
+}
+
+/* Track List with 3 Columns and Draggable */
+.tracklist-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    gap: 1vw;
+    max-width: 100%;
+    height: 36vh; /* Limit height to avoid excessive space usage */
+    overflow-y: scroll;
+    cursor: grab;
+    margin: 0;
+}
+
+.card {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      border: 1px solid #aaa;
+      border-radius: 6px;
+      padding: 10px;
+      cursor: pointer;
+      width: 95%;
+      transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.card:hover {
+    background-color: #00ff00;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.7);
+    transform: translateY(+2px);
+    /* box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border: 2px solid #eee */
+}
+
+.card img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.text-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      font-size: 2vh;
+    }
+.text-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      font-size: 2vh;
+    }
+
+.title {
+    font-weight: bold;
+    font-size: 2vh;
+    margin-bottom: 8px;
+}
+
+.artist {
+    font-size: 2vh;
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.overlay-text {
+    position: absolute;
+    top: 0%; /* Adjust this value to vertically center the text */
+    left: 50%; /* Adjust this value to horizontally center the text */
+    transform: translate(-50%, -50%); /* Center the text precisely */
+    background-color: #ffeebc; /* Set the background color with some transparency */
+    color: #fff; /* Set the text color */
+    padding: 10px 20px; /* Add some padding to the text */
+    font-size: 20px; /* Adjust the font size */
+    text-align: center; /* Center the text horizontally */ 
+}
+
+
+/* Responsive */
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 500px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Now Playing layout with Image and Text side by side */
+.nowplaying-wrap {
+    display: flex;
+    flex-direction: row; /* Align items horizontally */
+    align-items: flex-start; /* Align to the top */
+    justify-content: left;
+    width: 85%;
+    height: 8vh;
+    max-height: 8vh;
+}
+
+/* Track Title (larger font) */
+.nowplaying-title {
+    font-family: "Special Elite";
+    font-size: 4vh; /* Larger font size for track name */
+    text-align: left; /* Align text to the left */
+    padding: 1vh 1vw;
+    margin-bottom: 1vh; /* Space between track name and artist */
+    width: max-content; /* Allow title to take up most of the space */
+}
+
+/* Artist Name (smaller font) */
+.nowplaying-artist {
+    font-family: "Special Elite";
+    font-size: 4vh; /* Smaller font size for artist */
+    text-align: left;
+    padding: 1vh 1vw;
+    margin-bottom: 1vh;
+    width: max-content; 
+}
+
+/* Queue Length (smaller font) */
+.nowplaying-queue {
+    font-family: "Special Elite";
+    font-size: 2vh; /* Smaller font size for artist */
+    text-align: left;
+    padding: 1vh 1vw;
+    margin-bottom: 1vh;
+    width: max-content; 
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.imgbox {
+    display: grid;
+    height: 100%;
+    width: 100%;
+}
+
+.center-fit {
+    max-width: 90%;
+    max-height: 13vh;
+    object-fit: scale-down; 
+    object-position: center;
+}
+
+/* Track Image */
+.nowplaying-image {
+    object-position: center;
+    max-width: 20%;
+    max-height: 12vh;
+    border-radius: 1vh;
+    margin-top: 1vh; 
+    margin-bottom: 1vh; 
+    margin-left: 1vw; 
+    margin-right: 1vw; 
+    border: .5vw solid #775733;
+    padding: 2vh 2vw;
+}
+
+/* admin numberbox */
+#admin-input {
+    display: inline-block;
+    object-position: center;
+    padding-bottom: 2px;
+    background-image: linear-gradient(to right, tomato 60%, transparent 0%);
+    background-position: bottom;
+    background-size: 34.5px 5px;
+    background-repeat: repeat-x;
+    overflow: hidden;
+  
+}
+
+#admin-input input {
+  border-bottom: 0;
+  border: none;
+  outline: none;
+  letter-spacing: 28.5px;
+  overflow-x: hidden;
+  width: 175px;
+}

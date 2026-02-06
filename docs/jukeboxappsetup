@@ -1,0 +1,123 @@
+
+Install NGINX and uwsgi
+
+sudo apt update
+sudo apt install nginx uwsgi uwsgi-plugin-python3
+
+create the application folder 
+$ sudo mkdir /srv/jukebox
+$ sudo mkdir /srv/jukebox/app /srv/jukebox/log /srv/jukebox/wsgi /srv/jukebox/db
+
+copy the app , db , wsgi and static files into location
+
+$ sudo chown -R jukebox:jukebox /srv/jukebox
+$ sudo chown jukebox:www-data /srv/jukebox 
+$ sudo chown -R jukebox:www-data /srv/jukebox/static /srv/jukebox/socket
+$ chmod 0750 /srv/jukebox
+
+
+create the venv folder in the app directory
+$ cd /srv/jukebox/app
+$ python3 -m venv venv
+$ ./venv/bin/activate
+$ pip install uwsgi
+
+create a wsgi entry point file 
+
+# wsgi.py
+from app import app
+
+if __name__ == "__main__":
+    app.run()
+
+Create a uWSGI configuraton file
+
+# uwsgi.ini
+[uwsgi]
+module = wsgi:app
+master = true
+processes = 2
+threads = 2
+socket = /srv/jukebox/socket/uwsgi.sock
+chmod-socket = 660
+chown-socket = jukebox:www-data
+vacuum = true
+die-on-term = true
+logto = /srv/jukebox/log/app.log
+# memory management options
+max-requests = 1000
+reload-on-rss = 512
+evil-reload-on-rss = 1024
+# performance options
+buffer-size = 65536
+post-buffering = 8192
+
+
+Create an NGINX config file for the site
+
+$ vi  /etc/nginx/sites-available/jukebox-app
+
+With the contents:
+
+server {
+    listen 80;
+    server_name your-domain.com;
+    
+    location / {
+        include uwsgi_params;
+        uwsgi_pass unix:/srv/jukebox/sockt/uwsgi.sock;
+        uwsgi_read_timeout 300;
+        uwsgi_send_timeout 300;
+    }
+    
+    location /static {
+        alias /srv/jukebox/static;
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+    
+    # Security headers
+    add_header X-Content-Type-Options nosniff;
+    add_header X-Frame-Options DENY;
+    add_header X-XSS-Protection "1; mode=block";
+
+    # performance  nginx config
+    client_max_body_size 10M;
+    uwsgi_buffer_size 128k;
+    uwsgi_buffers 4 256k;
+    uwsgi_busy_buffers_size 256k;
+}
+
+enable the site and start Nginx 
+
+sudo ln -s /etc/nginx/sites-available/jukebox-app /etc/nginx/sites-enabled/
+sudo nginx -t  # Test configuration
+sudo systemctl restart nginx
+
+create the systemd file for the uWSGI service
+
+# /etc/systemd/system/uwsgi-app.service
+[Unit]
+Description=uWSGI instance to serve your app
+After=network.target
+
+[Service]
+User=jukebox
+Group=www-data
+WorkingDirectory=/srv/jukebox/app
+Environment="PATH=/srv/jukebox/app/venv/bin"
+ExecStart=/srv/jukebox/app/venv/bin/uwsgi --ini /srv/jukebox/wsgi/uwsgi.ini
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
+Enable and start the service
+
+sudo systemctl daemon-reload
+sudo systemctl enable uwsgi-app
+sudo systemctl start uwsgi-app
+
+start desktop browser in kiosk mode (fullscreen)
+
+chromium-browser --kiosk http://127.0.0.1

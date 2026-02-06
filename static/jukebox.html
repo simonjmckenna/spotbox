@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!--   Copyright 2025 Simon McKenna (simes@hotmail.co.uk)                -->
+
+    <!-- Licensed under the Apache License, Version 2.0 (the "License");     -->
+    <!-- you may not use this file except in compliance with the License.    -->
+    <!-- You may obtain a copy of the License at:                            -->
+
+    <!--     http://www.apache.org/licenses/LICENSE-2.0                      -->
+
+    <!-- Unless required by applicable law or agreed to in writing, software -->
+    <!-- distributed under the License is distributed on an "AS IS" BASIS,   -->
+    <!-- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or     --> 
+    <!-- implied. See the License for the specific language governing        -->
+    <!-- permissions and limitations under the License.                      -->
+<head>
+<meta charset="UTF-8">
+<title>Wurlitzer Jukebox</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Raleway:wght@300;600&display=swap" rel="stylesheet">
+<link href="/static/jukebox.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+<div class="jukebox">
+
+    <div class="jukebox-top"></div>
+
+<!-- Track List -->
+    <div class="screen">
+        <div id="playListName" class="screen-title"> <ul id="playlistname"></ul>  </div>
+        <div class="tracklist-grid" id="tracklist-grid" onmousedown="startDrag(event)">
+            <!--- Pull the tracklist from the application -->
+        </div>
+    </div>
+
+<!-- SpotBox Title -->
+    <div class="jukebox-title">Welcome to SpotBox :
+        <div id="credits" class="credits"> <ul id="credits"></ul></div> <!-- Credits field -->
+    </div>
+
+<!-- Now Playing -->
+    <div class="screen">
+        <div class="nowplaying-wrap">
+            <div class="screen-title">Now Playing</div>
+            <div class="imgbox">
+                <div id="NowPlaying-image"  class="nowplaying-image">  <ul id="nowplaying-image"></ul></div>
+            </div>
+            <div class="text-col">
+                <div id="NowPlaying-title"  class="nowplaying-title">  <ul id="nowplaying-title"></ul></div>    
+                <div id="NowPlaying-artist" class="nowplaying-artist"> <ul id="nowplaying-artist"></ul></div>
+                <div id="NowPlaying-Queue" class="nowplaying-queue"> <ul id="nowplaying-queue"></ul></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="jukebox-bottom"></div>
+    <div class="image-container">
+        <div class="overlay-text"><a href="/admin">Admin</a></div>
+    </div>
+</div>
+
+<script src="jukebox.js"></script>
+
+</body>
+</html>
