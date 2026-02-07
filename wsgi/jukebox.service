@@ -1,0 +1,16 @@
+# /etc/systemd/system/uwsgi-jukebox.service
+[Unit]
+Description=uWSGI instance to serve jukebox app
+After=network.target
+
+[Service]
+User=jukebox
+Group=www-data
+WorkingDirectory=/srv/jukebox/app
+Environment="PATH=/srv/jukebox/app/venv/bin"
+EnvironmentFile=/srv/jukebox/wsgi/jukebox-service.env
+ExecStart=/srv/jukebox/app/venv/bin/uwsgi --ini /srv/jukebox/wsgi/uwsgi.ini
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
