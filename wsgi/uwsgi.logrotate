@@ -1,0 +1,10 @@
+"/srv/jukebox/log/uwsgiapp*.log" {
+  copytruncate
+  daily
+  rotate 5
+  compress
+  delaycompress
+  missingok
+  notifempty
+  sharedscripts
+}
