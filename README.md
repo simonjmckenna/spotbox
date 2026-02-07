@@ -113,4 +113,14 @@ CREATE UNIQUE INDEX "trackName_index" ON "TRACK" (
 
 
 
+use rap-config to enable autologin to GUI
+
+Then edit /etc/lightdm/lightdm.conf to set autologin-user to the correct user (in our case jukebox).
+
+the create a kiosk.desktop file in ~/.config/autostart (may need to create the directory) with the contents 
+
+[Desktop Entry]
+Name=chromium kiosk
+Exec=chromium http://127.0.0.1/ --kiosk --noerrdialogs --disable-infobars --no-first-run --enable-features=OverlayScrollbar --start-maximized --password-store=basic --disable-features=DbusSecretPortal
+Type=Application
 
