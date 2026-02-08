@@ -1,0 +1,17 @@
+Jukebox Kiosk Mode setup
+
+create the folder ~/.config/autostart
+
+copy the kiosk.desktop file to the ~/.config/autostart
+
+Open the Raspberry PI configuration app and ensure that
+
+	System->Desktop Auto Login is on 
+	System->Console Auto Login is on 
+
+ edit /etc/lightdm/lightdm.conf 
+
+        ensure autologin-user is set to the target user. 
+
+
+
