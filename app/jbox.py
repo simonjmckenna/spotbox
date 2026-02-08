@@ -15,18 +15,20 @@ import os
 # Are we in Debug 
 if 'JBOX_DEBUG' in os.environ :
     # This is developement set the logfile and log level
-    config.JBOX_LOGLEVEL      = config.JBOX_DEV_LOGLEVEL 
-    config.JBOX_LOGFILE       = config.JBOX_DEV_LOGFILE
+    config.JBOX_LOGLEVEL      = config.JBOX_DBG_LOGLEVEL 
 else:
     config.JBOX_LOGLEVEL      = config.JBOX_PROD_LOGLEVEL 
+
+if 'FLASK_ENV' in os.environ :
+    config.JBOX_LOGFILE       = config.JBOX_DEV_LOGFILE
+else:
     config.JBOX_LOGFILE       = config.JBOX_PROD_LOGFILE 
 
-if __name__ == '__main__':
-    # instantiate the logger, use the watched filehandler so logrotate works
-    logging.basicConfig( level=config.JBOX_LOGLEVEL,
+# instantiate the logger, use the watched filehandler so logrotate works
+logging.basicConfig( level=config.JBOX_LOGLEVEL,
                      format='%(asctime)s %(levelname)s LOG: %(message)s',
                      handlers=[ logging.handlers.TimedRotatingFileHandler(config.JBOX_LOGFILE, when='midnight', interval=1,backupCount=config.LOG_FILE_RETENTION ), logging.StreamHandler() ])
-    print("log init complete")
+print("log init complete")
 
 
 from flask import Flask, redirect, request, session, jsonify
@@ -59,6 +61,7 @@ Session(app)
 
 # Global Variable to hold the website URL
 weburl = None
+webport = None
 # Global Variables caching data from database
 playback_device_id=None
 active_playlist_id=None
@@ -357,7 +360,6 @@ def queue_track():
 ################################################################
 @app.route('/webapi/getNowPlayingTrack')
 def api_playing_track():
-
     msg = ""
     
     logger.debug(f"EXEC {func_name()}()")
@@ -437,7 +439,6 @@ def setTrackData(track_artist,track_title,track_image,msg,track_status,trackid,q
 ################################################################
 @app.route('/webapi/play_track',methods=['POST'])
 def api_play_track():
-
     logger.debug(f"EXEC {func_name()}()")
 
     myjboxSpotify = jboxSpotify(session,loggedIn=True)
@@ -630,48 +631,101 @@ def bgGetSPCurrentTrack(myjboxdb):
 
 ################################################################
 ################################################################
-def main()->int :
+def app_init()->int :
+    logger.debug(f"EXEC {func_name()}() ")
     global weburl
-    # Get the listening port from the environment
-    port = os.environ.get("JBOX_PORT")
-    if port is None:
-        port="8888"
+    global webport
+    redirect_uri=None
+    result = 0
+    webhost=None
+    webpath=None
 
-    weburl = os.environ.get("SPOTIPY_REDIRECT_URI")
-    if weburl is None:
-        logger.error("Missing Environment Variable SPOTIPY_REDIRECT_URI")
-        return 3
+    # Get the listening port from the environment
+    if 'JBOX_USE_PROD_PORT' in os.environ:
+        # Using production port 
+        webport_name= 'JBOX_PROD_PORT'
+    else:
+        # using debug Port
+        webport_name= 'JBOX_DBG_PORT'
+
+    # Get the port from the environment and check it. 
+    webport = os.environ.get(webport_name)
+    if webport is None:
+        result =1
+        logger.error(f"ENDS {func_name()}() error {result}:Missing Environment Variable  {webport_name}") 
+        return result
+          
+    webhost = os.environ.get("JBOX_HOST")
+    if webhost is None:
+        result =2
+        logger.error(f"ENDS {func_name()}() error {result}:Missing Environment Variable JBOX_HOST")
+        return result
+
+    webpath = os.environ.get("SPOTIFY_REDIRECT_PATH")
+
+    if webpath is None:
+        result =3
+        logger.error(f"ENDS {func_name()}() error {result}:Missing Environment Variable SPOTIFY_REDIRECT_PATH")
+        return result
+    
+    redirect_uri = f"{webhost}:{webport}{webpath}"
+    os.environ['SPOTIPY_REDIRECT_URI'] = redirect_uri
+    logger.debug(f"    {func_name()}()  SPOTIPY_REDIRECT_URI set to {redirect_uri}")
+    
+    # This needs to be set for the SPOTIPY library to use 
+    if "SPOTIPY_CLIENT_ID" not in os.environ:
+        result =4
+        logger.error(f"ENDS {func_name()}() error {result}:Missing Environment Variable SPOTIPY_CLIENT_ID")
+        return result
+
+    # This needs to be set for the SPOTIPY library to use 
+    if "SPOTIPY_CLIENT_SECRET" not in os.environ:
+        result =5
+        logger.error(f"ENDS {func_name()}() error {result}:Missing Environment Variable SPOTIPY_CLIENT_SECRET")
+        return result
+
 
     # Get the path to the database file from the environment
-    sqldbname = os.environ.get("JBOX_DBPATH")
-    if sqldbname is None:
-        sqldbname=config.SQLDBNAME
+    sqldbpath = os.environ.get("JBOX_DBPATH")
+    if sqldbpath is None:
+        sqldbpath=config.SQLDBNAME
     else:
-        config.SQLDBNAME = sqldbname
+        config.SQLDBNAME = sqldbpath
+
+    logger.debug(f"     {func_name()}() sqldbpath  config.SQLDBNAME is {sqldbpath}")
     
     # Create a database Instance
-    myjboxdb = jukeboxdb(sqldbname)
+    myjboxdb = jukeboxdb(sqldbpath)
 
     # Test the database using a test value read/write
-    result,msg = myjboxdb.test()
-    if result == False:
-        print(f"Failed to initialise jukebox database: {msg}")
-        return 1
+    dbtest,msg = myjboxdb.test()
+    if dbtest == False:
+        result =  8
+        logger.errror(f"ENDS {func_name()}() error{result}: Failed to initialise jukebox database: {msg}")
+        return result
 
 
+    logger.debug(f"ENDS {func_name()}() = SUCCESS {result}")
+    return result
+
+################################################################
+################################################################
+
+# initialise the application
+result = app_init()
+if result != 0 :
+    # Failed app__init() 
+    logger.error(f"function app_init returned nn zero code {result}")
+    exit(result)
+    
+# If we are in development, this modules will be main so run the app
+# production uses uwsgi which will startthe app under it's own control
+if __name__ == '__main__':
     # Following lines allow application to be run more conveniently with
     # `python app.py` (Make sure you're using python3)
     # (Also includes directive to leverage pythons threading capacity.
     app.jinja_env.auto_reload = True
     app.config['TEMPLATES_AUTO_RELOAD'] = True
-
-    app.run( threaded=True, debug=True, port=int(port))
-
-    print(f"Unexpected return from Flask Application")
-    return 2
-
-################################################################
-################################################################
-if __name__ == '__main__':
-    result = main()
-    exit (main())
+    app.run( threaded=True, debug=True, port=int(webport))
+    # We should never get here 
+    logger.error(f"Unexpected return from Flask Application")
